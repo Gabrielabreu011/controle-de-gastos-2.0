@@ -7,6 +7,118 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;600;700;900&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
+<style>
+  /* CSS crítico do login — inline para nunca depender do carregamento do style.css */
+  #loginScreen {
+    position: fixed; inset: 0; z-index: 999;
+    display: flex; align-items: center; justify-content: center;
+    background: #0B1F16;
+    font-family: 'Space Grotesk', Arial, sans-serif;
+    padding: 20px;
+  }
+  #loginScreen .login-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(circle at 25% 20%, rgba(201,162,75,0.14), transparent 55%),
+      radial-gradient(circle at 78% 82%, rgba(42,95,63,0.4), transparent 50%),
+      #0B1F16;
+  }
+  #loginScreen .login-bg::before {
+    content: ''; position: absolute; inset: 0;
+    background-image: radial-gradient(rgba(201,162,75,0.07) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+  #loginScreen .login-card {
+    position: relative; z-index: 1;
+    width: 100%; max-width: 380px;
+    padding: 44px 36px 36px;
+    text-align: center;
+    background: #0F2A1F;
+    border: 1px solid rgba(201,162,75,0.25);
+    border-radius: 22px;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+    box-sizing: border-box;
+  }
+  #loginScreen .login-vault-icon { display: flex; justify-content: center; margin-bottom: 18px; }
+  #loginScreen .vault-ring-outer { fill: none; stroke: rgba(201,162,75,0.35); stroke-width: 2; }
+  #loginScreen .vault-ring-inner { fill: none; stroke: #C9A24B; stroke-width: 1.4; stroke-dasharray: 4 4; }
+  #loginScreen .vault-pin { fill: #E4C97A; }
+  #loginScreen .vault-needle {
+    stroke: #E4C97A; stroke-width: 2.5; stroke-linecap: round;
+    transform-origin: 50px 50px; animation: needleSpin 4s ease-in-out infinite;
+  }
+  #loginScreen .vault-needle-short {
+    stroke: #C9A24B; stroke-width: 2;
+    transform-origin: 50px 50px; animation: needleSpin 4s ease-in-out infinite reverse;
+  }
+  @keyframes needleSpin { 0%{transform:rotate(0)} 50%{transform:rotate(35deg)} 100%{transform:rotate(0)} }
+
+  #loginScreen .login-eyebrow {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    text-transform: uppercase; letter-spacing: 1.5px;
+    color: #C9A24B; margin: 0 0 8px;
+  }
+  #loginScreen .login-title {
+    font-family: 'Fraunces', Georgia, serif; font-size: 32px; font-weight: 700;
+    margin: 0 0 8px; color: #F3EDE0; letter-spacing: 0.3px;
+  }
+  #loginScreen .login-sub {
+    font-size: 13.5px; color: rgba(243,237,224,0.55); margin: 0 0 30px;
+  }
+  #loginScreen .login-form { display: flex; flex-direction: column; align-items: center; }
+
+  #loginScreen .pin-dots { display: flex; gap: 14px; margin-bottom: 30px; }
+  #loginScreen .pin-dot {
+    width: 14px; height: 14px; border-radius: 50%;
+    border: 1.5px solid rgba(201,162,75,0.4); background: transparent;
+    transition: background .15s ease, border-color .15s ease, transform .15s ease;
+    box-sizing: border-box;
+  }
+  #loginScreen .pin-dot.filled {
+    background: #E4C97A; border-color: #E4C97A; transform: scale(1.15);
+  }
+  #loginScreen .pin-dots.shake { animation: shakeDots .4s ease; }
+  @keyframes shakeDots {
+    0%,100%{transform:translateX(0)} 20%{transform:translateX(-8px)}
+    40%{transform:translateX(8px)} 60%{transform:translateX(-6px)} 80%{transform:translateX(6px)}
+  }
+  #loginScreen .pin-dots.shake .pin-dot.filled { background: #D4776A; border-color: #D4776A; }
+
+  #loginScreen .login-hidden-input {
+    position: absolute !important;
+    width: 1px !important; height: 1px !important;
+    opacity: 0 !important; pointer-events: none !important;
+    border: 0; padding: 0; margin: 0;
+  }
+
+  #loginScreen .keypad {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 10px; width: 100%; max-width: 260px;
+  }
+  #loginScreen .key {
+    background: #143824;
+    border: 1px solid rgba(201,162,75,0.2);
+    color: #F3EDE0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 18px; font-weight: 500;
+    padding: 16px 0;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background .12s ease, transform .08s ease, border-color .12s ease;
+    box-sizing: border-box;
+  }
+  #loginScreen .key:hover { background: rgba(201,162,75,0.15); border-color: rgba(201,162,75,0.4); }
+  #loginScreen .key:active { transform: scale(0.93); }
+  #loginScreen .key-ghost { font-size: 12px; color: rgba(243,237,224,0.55); font-family: inherit; }
+
+  #loginScreen .login-error {
+    display: none; color: #D4776A; font-size: 12.5px; margin: 18px 0 0;
+  }
+  #loginScreen .login-error.visible { display: block; }
+
+  #loginScreen.unlocking { animation: loginFadeOut .5s ease forwards; }
+  @keyframes loginFadeOut { to { opacity: 0; } }
+</style>
 </head>
 <body>
 
@@ -28,7 +140,7 @@
     <h1 class="login-title">Cofre</h1>
     <p class="login-sub">Digite a senha para destrancar</p>
 
-    <form id="loginForm" class="login-form">
+    <form id="loginForm" class="login-form" onsubmit="return false;">
       <div class="pin-dots" id="pinDots">
         <span class="pin-dot"></span>
         <span class="pin-dot"></span>
@@ -37,7 +149,7 @@
         <span class="pin-dot"></span>
         <span class="pin-dot"></span>
       </div>
-      <input type="password" id="loginPassword" class="login-hidden-input" inputmode="numeric" maxlength="6" autocomplete="off" autofocus>
+      <input type="password" id="loginPassword" class="login-hidden-input" inputmode="numeric" maxlength="6" autocomplete="off">
 
       <div class="keypad" id="keypad">
         <button type="button" class="key" data-key="1">1</button>
