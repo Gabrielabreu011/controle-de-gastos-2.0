@@ -8,190 +8,148 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;600;700;900&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <style>
-  /* ===== LOGIN — CSS crítico inline, nunca depende do style.css externo ===== */
+  /* ===== LOGIN — minimalista, CSS crítico inline ===== */
   #loginScreen {
     position: fixed; inset: 0; z-index: 999;
     display: flex; align-items: center; justify-content: center;
-    background: #0A1912;
+    background: #0F2A1F;
     font-family: 'Space Grotesk', Arial, sans-serif;
     padding: 20px;
-    overflow: hidden;
   }
-  #loginScreen .login-bg {
-    position: absolute; inset: 0;
-    background:
-      radial-gradient(circle at 22% 15%, rgba(201,162,75,0.16), transparent 50%),
-      radial-gradient(circle at 80% 85%, rgba(42,95,63,0.45), transparent 55%),
-      #0A1912;
-  }
-  #loginScreen .login-bg::before {
-    content: ''; position: absolute; inset: 0;
-    background-image: radial-gradient(rgba(201,162,75,0.08) 1px, transparent 1px);
-    background-size: 24px 24px;
-  }
-  #loginScreen .login-bg::after {
-    content: '';
-    position: absolute; inset: -50%;
-    background: conic-gradient(from 0deg, transparent, rgba(201,162,75,0.05), transparent 30%);
-    animation: bgRotate 18s linear infinite;
-  }
-  @keyframes bgRotate { to { transform: rotate(360deg); } }
 
   #loginScreen .login-card {
     position: relative; z-index: 1;
-    width: 100%; max-width: 400px;
-    padding: 48px 40px 40px;
-    text-align: center;
-    background: linear-gradient(165deg, #133423 0%, #0F2A1F 55%, #0C2419 100%);
-    border: 1px solid rgba(201,162,75,0.28);
-    border-radius: 24px;
-    box-shadow:
-      0 40px 100px rgba(0,0,0,0.55),
-      0 0 0 1px rgba(201,162,75,0.06) inset,
-      0 1px 0 rgba(255,255,255,0.04) inset;
+    width: 100%; max-width: 360px;
+    text-align: left;
     box-sizing: border-box;
-    animation: cardRise .6s cubic-bezier(.2,.8,.2,1);
+    animation: loginRise .5s cubic-bezier(.2,.8,.2,1);
   }
-  @keyframes cardRise {
-    from { opacity: 0; transform: translateY(24px) scale(0.97); }
-    to { opacity: 1; transform: translateY(0) scale(1); }
+  @keyframes loginRise {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 
-  #loginScreen .login-vault-icon {
-    display: flex; justify-content: center; margin-bottom: 20px;
-    filter: drop-shadow(0 4px 12px rgba(201,162,75,0.25));
-  }
-  #loginScreen .dial-outer-ring {
-    fill: none; stroke: url(#brassGradLogin); stroke-width: 3;
-  }
-  #loginScreen .dial-outer-ring-bg {
-    fill: #0C2419; stroke: rgba(201,162,75,0.15); stroke-width: 1;
-  }
-  #loginScreen .dial-tick {
-    stroke: rgba(201,162,75,0.5); stroke-width: 1.5;
-  }
-  #loginScreen .dial-inner-ring { fill: none; stroke: #C9A24B; stroke-width: 1.2; opacity: 0.6; }
-  #loginScreen .dial-center-cap { fill: url(#brassGradLogin); }
-  #loginScreen .dial-needle {
-    stroke: #F0DCA0; stroke-width: 3; stroke-linecap: round;
-    transform-origin: 60px 60px;
-    animation: dialSpin 5s ease-in-out infinite;
-    filter: drop-shadow(0 0 4px rgba(240,220,160,0.5));
-  }
-  @keyframes dialSpin {
-    0%   { transform: rotate(-8deg); }
-    50%  { transform: rotate(48deg); }
-    100% { transform: rotate(-8deg); }
+  #loginScreen .login-mark {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    background: linear-gradient(145deg, #E4C97A, #C9A24B);
+    color: #0F2A1F;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 900; font-size: 19px;
+    margin-bottom: 28px;
   }
 
   #loginScreen .login-eyebrow {
     font-family: 'JetBrains Mono', monospace; font-size: 11px;
-    text-transform: uppercase; letter-spacing: 2px;
+    text-transform: uppercase; letter-spacing: 1.5px;
     color: #C9A24B; margin: 0 0 10px;
-    display: flex; align-items: center; justify-content: center; gap: 8px;
   }
-  #loginScreen .login-eyebrow::before,
-  #loginScreen .login-eyebrow::after {
-    content: ''; height: 1px; width: 24px; background: rgba(201,162,75,0.4);
-  }
+
   #loginScreen .login-title {
-    font-family: 'Fraunces', Georgia, serif; font-size: 36px; font-weight: 700;
-    margin: 0 0 8px; color: #F8F3E6; letter-spacing: 0.3px;
-    background: linear-gradient(180deg, #F8F3E6 0%, #E4C97A 100%);
-    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    font-family: 'Fraunces', Georgia, serif; font-size: 32px; font-weight: 600;
+    margin: 0 0 8px; color: #F3EDE0; line-height: 1.15;
   }
+
   #loginScreen .login-sub {
-    font-size: 13.5px; color: rgba(243,237,224,0.5); margin: 0 0 32px;
-  }
-  #loginScreen .login-form { display: flex; flex-direction: column; align-items: center; }
-
-  #loginScreen .pin-dots { display: flex; gap: 16px; margin-bottom: 32px; }
-  #loginScreen .pin-dot {
-    width: 15px; height: 15px; border-radius: 50%;
-    border: 1.5px solid rgba(201,162,75,0.4); background: rgba(201,162,75,0.04);
-    transition: background .18s ease, border-color .18s ease, transform .18s ease, box-shadow .18s ease;
-    box-sizing: border-box;
-  }
-  #loginScreen .pin-dot.filled {
-    background: linear-gradient(145deg, #E4C97A, #C9A24B);
-    border-color: #E4C97A; transform: scale(1.2);
-    box-shadow: 0 0 12px rgba(228,201,122,0.5);
-  }
-  #loginScreen .pin-dots.shake { animation: shakeDots .45s ease; }
-  @keyframes shakeDots {
-    0%,100%{transform:translateX(0)} 15%{transform:translateX(-10px)}
-    30%{transform:translateX(10px)} 45%{transform:translateX(-8px)}
-    60%{transform:translateX(8px)} 75%{transform:translateX(-4px)} 90%{transform:translateX(4px)}
-  }
-  #loginScreen .pin-dots.shake .pin-dot.filled {
-    background: linear-gradient(145deg, #E48F7A, #D4776A);
-    border-color: #D4776A;
-    box-shadow: 0 0 12px rgba(212,119,106,0.5);
+    font-size: 14px; color: rgba(243,237,224,0.5); margin: 0 0 36px;
   }
 
-  #loginScreen .login-hidden-input {
-    position: absolute !important;
-    width: 1px !important; height: 1px !important;
-    opacity: 0 !important; pointer-events: none !important;
-    border: 0; padding: 0; margin: 0;
+  #loginScreen .login-form { display: flex; flex-direction: column; }
+
+  #loginScreen .field-label {
+    font-size: 12px; color: rgba(243,237,224,0.55);
+    margin: 0 0 8px; font-weight: 500;
   }
 
-  #loginScreen .keypad {
-    display: grid; grid-template-columns: repeat(3, 1fr);
-    gap: 12px; width: 100%; max-width: 280px;
-  }
-  #loginScreen .key {
-    position: relative;
-    background: linear-gradient(160deg, #17402A 0%, #123120 100%);
-    border: 1px solid rgba(201,162,75,0.22);
+  #loginScreen .field-wrap { position: relative; margin-bottom: 8px; }
+
+  #loginScreen .login-input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 1.5px solid rgba(201,162,75,0.3);
     color: #F3EDE0;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 19px; font-weight: 500;
-    padding: 17px 0;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: background .12s ease, transform .08s ease, border-color .12s ease, box-shadow .12s ease;
+    font-size: 20px;
+    letter-spacing: 3px;
+    padding: 8px 34px 12px 2px;
     box-sizing: border-box;
-    box-shadow: 0 2px 0 rgba(0,0,0,0.25), 0 1px 0 rgba(255,255,255,0.03) inset;
+    transition: border-color .2s ease;
+    -webkit-text-security: disc;
   }
-  #loginScreen .key:hover {
-    background: linear-gradient(160deg, #1D4E33 0%, #163824 100%);
-    border-color: rgba(201,162,75,0.45);
+  #loginScreen .login-input::placeholder {
+    color: rgba(243,237,224,0.25);
+    letter-spacing: normal;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 14px;
   }
-  #loginScreen .key:active {
-    transform: scale(0.92) translateY(1px);
-    box-shadow: 0 0 0 rgba(0,0,0,0.25);
+  #loginScreen .login-input:focus {
+    outline: none;
+    border-color: #E4C97A;
   }
-  #loginScreen .key-ghost { font-size: 12px; color: rgba(243,237,224,0.5); font-family: inherit; }
+  #loginScreen .field-wrap.error .login-input {
+    border-color: #D4776A;
+  }
+
+  #loginScreen .toggle-visibility {
+    position: absolute;
+    right: 0; top: 50%;
+    transform: translateY(-38%);
+    background: none; border: none;
+    color: rgba(243,237,224,0.4);
+    cursor: pointer;
+    padding: 4px;
+    display: flex; align-items: center; justify-content: center;
+    transition: color .15s ease;
+  }
+  #loginScreen .toggle-visibility:hover { color: #C9A24B; }
+  #loginScreen .toggle-visibility svg { width: 18px; height: 18px; }
 
   #loginScreen .login-error {
-    display: flex; align-items: center; justify-content: center; gap: 6px;
+    font-size: 12.5px; color: #D4776A;
     opacity: 0; height: 0; overflow: hidden;
-    color: #E48F7A; font-size: 12.5px; margin: 0;
-    transition: opacity .2s ease;
+    margin: 0; transition: opacity .2s ease;
   }
-  #loginScreen .login-error.visible { opacity: 1; height: auto; margin: 18px 0 0; }
+  #loginScreen .login-error.visible { opacity: 1; height: auto; margin: 10px 0 0; }
 
-  #loginScreen.unlocking .login-card {
-    animation: cardUnlock .55s cubic-bezier(.4,0,.2,1) forwards;
+  #loginScreen .field-wrap.shake { animation: shakeField .4s ease; }
+  @keyframes shakeField {
+    0%,100%{transform:translateX(0)} 20%{transform:translateX(-8px)}
+    40%{transform:translateX(8px)} 60%{transform:translateX(-5px)} 80%{transform:translateX(5px)}
   }
-  @keyframes cardUnlock {
-    0%   { opacity: 1; transform: scale(1) rotateY(0); }
-    100% { opacity: 0; transform: scale(0.9) rotateY(12deg); filter: blur(4px); }
-  }
-  #loginScreen.unlocking { animation: screenFade .6s ease forwards; }
-  @keyframes screenFade { to { opacity: 0; visibility: hidden; } }
 
-  #loginScreen .unlock-flash {
-    position: absolute; inset: 0;
-    background: radial-gradient(circle, rgba(228,201,122,0.35), transparent 60%);
-    opacity: 0; pointer-events: none;
+  #loginScreen .login-btn {
+    margin-top: 28px;
+    background: linear-gradient(145deg, #E4C97A, #C9A24B);
+    color: #0F2A1F;
+    border: none;
+    padding: 14px 0;
+    border-radius: 10px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: 14.5px;
+    cursor: pointer;
+    transition: transform .15s ease, box-shadow .15s ease, opacity .15s ease;
   }
-  #loginScreen.success .unlock-flash {
-    animation: flashPulse .55s ease;
+  #loginScreen .login-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(201,162,75,0.25);
   }
-  @keyframes flashPulse {
-    0% { opacity: 0; } 40% { opacity: 1; } 100% { opacity: 0; }
+  #loginScreen .login-btn:active { transform: translateY(0) scale(0.98); }
+
+  #loginScreen .login-hint {
+    margin-top: 20px;
+    font-size: 11.5px;
+    color: rgba(243,237,224,0.3);
+    text-align: center;
+  }
+
+  #loginScreen.unlocking {
+    animation: screenFade .45s ease forwards;
+  }
+  @keyframes screenFade {
+    to { opacity: 0; visibility: hidden; }
   }
 </style>
 </head>
@@ -199,67 +157,38 @@
 
 <!-- ===================== TELA DE LOGIN ===================== -->
 <div class="login-screen" id="loginScreen">
-  <div class="login-bg"></div>
-  <div class="unlock-flash"></div>
   <div class="login-card">
-    <div class="login-vault-icon">
-      <svg viewBox="0 0 120 120" width="80" height="80">
-        <defs>
-          <linearGradient id="brassGradLogin" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#F0DCA0"/>
-            <stop offset="50%" stop-color="#C9A24B"/>
-            <stop offset="100%" stop-color="#9C7A34"/>
-          </linearGradient>
-        </defs>
-        <circle cx="60" cy="60" r="52" class="dial-outer-ring-bg"></circle>
-        <circle cx="60" cy="60" r="52" class="dial-outer-ring"></circle>
-        <circle cx="60" cy="60" r="40" class="dial-inner-ring"></circle>
-        <g class="dial-ticks">
-          <line x1="60" y1="12" x2="60" y2="20" class="dial-tick"/>
-          <line x1="60" y1="100" x2="60" y2="108" class="dial-tick"/>
-          <line x1="12" y1="60" x2="20" y2="60" class="dial-tick"/>
-          <line x1="100" y1="60" x2="108" y2="60" class="dial-tick"/>
-          <line x1="26" y1="26" x2="32" y2="32" class="dial-tick"/>
-          <line x1="94" y1="26" x2="88" y2="32" class="dial-tick"/>
-          <line x1="26" y1="94" x2="32" y2="88" class="dial-tick"/>
-          <line x1="94" y1="94" x2="88" y2="88" class="dial-tick"/>
-        </g>
-        <line x1="60" y1="60" x2="60" y2="26" class="dial-needle"/>
-        <circle cx="60" cy="60" r="8" class="dial-center-cap"/>
-      </svg>
-    </div>
+    <div class="login-mark">C</div>
 
-    <p class="login-eyebrow">Acesso restrito</p>
-    <h1 class="login-title">Cofre</h1>
-    <p class="login-sub">Digite a senha para destrancar</p>
+    <p class="login-eyebrow">Cofre</p>
+    <h1 class="login-title" id="welcomeTitle">Bem-vindo, Gabriel</h1>
+    <p class="login-sub">Digite sua senha para continuar</p>
 
     <form id="loginForm" class="login-form" onsubmit="return false;" autocomplete="off">
-      <div class="pin-dots" id="pinDots">
-        <span class="pin-dot"></span>
-        <span class="pin-dot"></span>
-        <span class="pin-dot"></span>
-        <span class="pin-dot"></span>
-        <span class="pin-dot"></span>
-        <span class="pin-dot"></span>
+      <p class="field-label">Senha</p>
+      <div class="field-wrap" id="fieldWrap">
+        <input
+          type="text"
+          id="loginPassword"
+          class="login-input"
+          placeholder="••••••"
+          autocomplete="off"
+          spellcheck="false"
+          maxlength="24"
+          autofocus
+        >
+        <button type="button" class="toggle-visibility" id="toggleVisibility" aria-label="Mostrar senha">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" id="eyeIcon">
+            <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
+          </svg>
+        </button>
       </div>
-      <input type="password" id="loginPassword" class="login-hidden-input" inputmode="numeric" maxlength="6" autocomplete="off">
-
-      <div class="keypad" id="keypad">
-        <button type="button" class="key" onclick="cofreLoginKey('1')">1</button>
-        <button type="button" class="key" onclick="cofreLoginKey('2')">2</button>
-        <button type="button" class="key" onclick="cofreLoginKey('3')">3</button>
-        <button type="button" class="key" onclick="cofreLoginKey('4')">4</button>
-        <button type="button" class="key" onclick="cofreLoginKey('5')">5</button>
-        <button type="button" class="key" onclick="cofreLoginKey('6')">6</button>
-        <button type="button" class="key" onclick="cofreLoginKey('7')">7</button>
-        <button type="button" class="key" onclick="cofreLoginKey('8')">8</button>
-        <button type="button" class="key" onclick="cofreLoginKey('9')">9</button>
-        <button type="button" class="key key-ghost" onclick="cofreLoginKey('clear')">Limpar</button>
-        <button type="button" class="key" onclick="cofreLoginKey('0')">0</button>
-        <button type="button" class="key key-ghost" onclick="cofreLoginKey('back')">⌫</button>
-      </div>
-
       <p id="loginError" class="login-error">Senha incorreta. Tente novamente.</p>
+
+      <button type="button" class="login-btn" onclick="cofreTryLogin()">Entrar</button>
+
+      <p class="login-hint">Seus dados ficam salvos apenas neste navegador.</p>
     </form>
   </div>
 </div>
@@ -268,86 +197,77 @@
   /* ===== LOGIN — script inline, isolado do app.js, garante funcionamento ===== */
   (function () {
     var APP_PASSWORD = '801620';
-    var SESSION_KEY = 'cofre_session_unlocked';
-    var currentPin = '';
+    var SESSION_KEY = 'cofre_locked_session';
 
     function $(id) { return document.getElementById(id); }
 
-    function renderDots() {
-      var dots = document.querySelectorAll('#pinDots .pin-dot');
-      for (var i = 0; i < dots.length; i++) {
-        if (i < currentPin.length) dots[i].classList.add('filled');
-        else dots[i].classList.remove('filled');
-      }
-    }
-
-    function resetPin() {
-      currentPin = '';
-      $('loginPassword').value = '';
-      renderDots();
-    }
-
     function showError() {
       $('loginError').classList.add('visible');
-      $('pinDots').classList.add('shake');
+      $('fieldWrap').classList.add('error');
+      $('fieldWrap').classList.add('shake');
       setTimeout(function () {
-        $('pinDots').classList.remove('shake');
-        resetPin();
-      }, 450);
+        $('fieldWrap').classList.remove('shake');
+      }, 400);
+    }
+
+    function clearError() {
+      $('loginError').classList.remove('visible');
+      $('fieldWrap').classList.remove('error');
     }
 
     function unlock() {
       sessionStorage.setItem(SESSION_KEY, 'true');
       var screen = $('loginScreen');
-      screen.classList.add('success');
-      setTimeout(function () {
-        screen.classList.add('unlocking');
-      }, 200);
+      screen.classList.add('unlocking');
       setTimeout(function () {
         screen.style.display = 'none';
         $('mainApp').style.display = '';
-      }, 850);
+      }, 460);
     }
 
-    function checkPin() {
-      if (currentPin.length < APP_PASSWORD.length) return;
-      if (currentPin === APP_PASSWORD) {
-        $('loginError').classList.remove('visible');
+    window.cofreTryLogin = function () {
+      var value = $('loginPassword').value.trim();
+      if (value === APP_PASSWORD) {
+        clearError();
         unlock();
       } else {
         showError();
       }
-    }
-
-    window.cofreLoginKey = function (key) {
-      if (key === 'clear') { resetPin(); return; }
-      if (key === 'back') {
-        currentPin = currentPin.slice(0, -1);
-        $('loginPassword').value = currentPin;
-        renderDots();
-        return;
-      }
-      if (currentPin.length >= APP_PASSWORD.length) return;
-      currentPin += key;
-      $('loginPassword').value = currentPin;
-      renderDots();
-      checkPin();
     };
 
-    document.addEventListener('keydown', function (e) {
-      var screen = $('loginScreen');
-      if (!screen || screen.style.display === 'none') return;
-      if (e.key >= '0' && e.key <= '9') window.cofreLoginKey(e.key);
-      else if (e.key === 'Backspace') window.cofreLoginKey('back');
-      else if (e.key === 'Escape') resetPin();
+    $('loginPassword').addEventListener('input', clearError);
+    $('loginPassword').addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') window.cofreTryLogin();
     });
 
-    if (sessionStorage.getItem(SESSION_KEY) === 'true') {
-      $('loginScreen').style.display = 'none';
-      $('mainApp').style.display = '';
-    } else {
-      renderDots();
-    }
+    $('toggleVisibility').addEventListener('click', function () {
+      var input = $('loginPassword');
+      var eye = $('eyeIcon');
+      if (input.type === 'text' && input.style.webkitTextSecurity !== 'none') {
+        input.style.webkitTextSecurity = 'none';
+        eye.innerHTML = '<path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-7 0-11-7-11-7a21.62 21.62 0 0 1 5.06-5.94M9.9 4.24A10.94 10.94 0 0 1 12 5c7 0 11 7 11 7a21.6 21.6 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line>';
+      } else {
+        input.style.webkitTextSecurity = 'disc';
+        eye.innerHTML = '<path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"></path><circle cx="12" cy="12" r="3"></circle>';
+      }
+      input.focus();
+    });
+
+    // Nome do usuário: memorizável e trocável facilmente
+    var USER_NAME = 'Gabriel';
+    var titleEl = $('welcomeTitle');
+    if (titleEl) titleEl.textContent = 'Bem-vindo, ' + USER_NAME;
+
+    // Sempre bloqueado após reload: usa sessionStorage por aba,
+    // e é limpo ativamente no carregamento para forçar novo login a cada reload.
+    sessionStorage.removeItem(SESSION_KEY);
+    $('loginScreen').style.display = 'flex';
+    $('mainApp').style.display = 'none';
+
+    setTimeout(function () {
+      var input = $('loginPassword');
+      if (input) input.focus();
+    }, 50);
   })();
 </script>
 
