@@ -1,1 +1,350 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cofre — Controle Financeiro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;600;700;900&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
 
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="brand-mark">C</span>
+      <span class="brand-name">Cofre</span>
+    </div>
+
+    <nav class="nav">
+      <button class="nav-item active" data-view="dashboard">
+        <span class="nav-icon">◆</span> Painel
+      </button>
+      <button class="nav-item" data-view="lancamentos">
+        <span class="nav-icon">◆</span> Lançamentos
+      </button>
+      <button class="nav-item" data-view="investimentos">
+        <span class="nav-icon">◆</span> Investimentos
+      </button>
+      <button class="nav-item" data-view="metas">
+        <span class="nav-icon">◆</span> Metas
+      </button>
+      <button class="nav-item" data-view="config">
+        <span class="nav-icon">◆</span> Configurações
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <p class="footer-note">Seus dados ficam salvos<br>apenas neste navegador.</p>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- ===================== DASHBOARD ===================== -->
+    <section id="view-dashboard" class="view active">
+      <header class="view-header">
+        <div>
+          <p class="eyebrow">Visão geral</p>
+          <h1>Bom te ver por aqui.</h1>
+        </div>
+        <div class="month-picker">
+          <button id="prevMonth" class="month-btn">‹</button>
+          <span id="currentMonthLabel" class="month-label"></span>
+          <button id="nextMonth" class="month-btn">›</button>
+        </div>
+      </header>
+
+      <!-- SIGNATURE: THE SAFE-TO-SPEND DIAL -->
+      <div class="vault-panel">
+        <div class="vault-dial-wrap">
+          <svg class="vault-dial" viewBox="0 0 240 240">
+            <circle class="dial-track" cx="120" cy="120" r="104"></circle>
+            <circle id="dialProgress" class="dial-progress" cx="120" cy="120" r="104"></circle>
+          </svg>
+          <div class="vault-dial-center">
+            <span class="dial-eyebrow">Livre para gastar hoje</span>
+            <span id="safeToSpendValue" class="dial-value">R$ 0,00</span>
+            <span id="safeToSpendSub" class="dial-sub">até o fim do mês</span>
+          </div>
+        </div>
+
+        <div class="vault-stats">
+          <div class="vault-stat">
+            <span class="vstat-label">Entradas do mês</span>
+            <span id="statIncome" class="vstat-value positive">R$ 0,00</span>
+          </div>
+          <div class="vault-stat">
+            <span class="vstat-label">Saídas do mês</span>
+            <span id="statExpense" class="vstat-value negative">R$ 0,00</span>
+          </div>
+          <div class="vault-stat">
+            <span class="vstat-label">Guardado (poupança)</span>
+            <span id="statSaved" class="vstat-value">R$ 0,00</span>
+          </div>
+          <div class="vault-stat">
+            <span class="vstat-label">Em investimentos</span>
+            <span id="statInvested" class="vstat-value">R$ 0,00</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="dash-grid">
+        <div class="card">
+          <div class="card-head">
+            <h3>Gastos por categoria</h3>
+          </div>
+          <canvas id="categoryChart" height="220"></canvas>
+          <p id="noCategoryData" class="empty-note">Adicione lançamentos para ver o gráfico.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <h3>Fluxo dos últimos 6 meses</h3>
+          </div>
+          <canvas id="flowChart" height="220"></canvas>
+        </div>
+
+        <div class="card card-wide">
+          <div class="card-head">
+            <h3>Últimos lançamentos</h3>
+            <button class="link-btn" data-goto="lancamentos">Ver todos</button>
+          </div>
+          <div id="recentList" class="tx-list"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== LANÇAMENTOS ===================== -->
+    <section id="view-lancamentos" class="view">
+      <header class="view-header">
+        <div>
+          <p class="eyebrow">Movimentações</p>
+          <h1>Lançamentos</h1>
+        </div>
+        <button class="btn-primary" id="openTxModal">+ Novo lançamento</button>
+      </header>
+
+      <div class="filter-bar">
+        <input type="text" id="searchTx" placeholder="Buscar por descrição...">
+        <select id="filterType">
+          <option value="all">Todos os tipos</option>
+          <option value="income">Entradas</option>
+          <option value="expense">Saídas</option>
+        </select>
+        <select id="filterCategory">
+          <option value="all">Todas as categorias</option>
+        </select>
+      </div>
+
+      <div class="card">
+        <table class="tx-table">
+          <thead>
+            <tr>
+              <th>Descrição</th>
+              <th>Categoria</th>
+              <th>Data</th>
+              <th>Valor</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="txTableBody"></tbody>
+        </table>
+        <p id="noTxData" class="empty-note">Nenhum lançamento ainda. Clique em "Novo lançamento" para começar.</p>
+      </div>
+    </section>
+
+    <!-- ===================== INVESTIMENTOS ===================== -->
+    <section id="view-investimentos" class="view">
+      <header class="view-header">
+        <div>
+          <p class="eyebrow">Patrimônio</p>
+          <h1>Investimentos</h1>
+        </div>
+        <button class="btn-primary" id="openInvModal">+ Novo investimento</button>
+      </header>
+
+      <div class="dash-grid">
+        <div class="card">
+          <div class="card-head"><h3>Total investido</h3></div>
+          <span id="totalInvestedBig" class="big-number">R$ 0,00</span>
+          <canvas id="invChart" height="200"></canvas>
+          <p id="noInvData" class="empty-note">Nenhum investimento cadastrado ainda.</p>
+        </div>
+
+        <div class="card card-wide">
+          <div class="card-head"><h3>Carteira</h3></div>
+          <div id="invList" class="tx-list"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== METAS ===================== -->
+    <section id="view-metas" class="view">
+      <header class="view-header">
+        <div>
+          <p class="eyebrow">Poupança com propósito</p>
+          <h1>Metas</h1>
+        </div>
+        <button class="btn-primary" id="openGoalModal">+ Nova meta</button>
+      </header>
+
+      <div id="goalsGrid" class="goals-grid"></div>
+      <p id="noGoalData" class="empty-note">Nenhuma meta criada. Que tal guardar para algo especial?</p>
+    </section>
+
+    <!-- ===================== CONFIGURAÇÕES ===================== -->
+    <section id="view-config" class="view">
+      <header class="view-header">
+        <div>
+          <p class="eyebrow">Ajustes</p>
+          <h1>Configurações</h1>
+        </div>
+      </header>
+
+      <div class="card" style="max-width:520px">
+        <div class="card-head"><h3>Renda mensal fixa (opcional)</h3></div>
+        <p class="field-help">Usada para calcular o quanto você pode gastar por dia, mesmo antes de lançar entradas do mês.</p>
+        <div class="form-row">
+          <label>Renda mensal esperada</label>
+          <input type="number" id="expectedIncome" placeholder="0,00" step="0.01">
+        </div>
+        <div class="form-row">
+          <label>Reserva mínima a manter no mês (%)</label>
+          <input type="number" id="reservePercent" placeholder="10" step="1" min="0" max="100">
+        </div>
+        <button class="btn-primary" id="saveConfig">Salvar configurações</button>
+      </div>
+
+      <div class="card" style="max-width:520px; margin-top:20px;">
+        <div class="card-head"><h3>Dados</h3></div>
+        <p class="field-help">Tudo é salvo localmente no seu navegador (localStorage). Nada é enviado para servidores.</p>
+        <button class="btn-secondary" id="exportData">Exportar dados (.json)</button>
+        <button class="btn-danger" id="clearData">Apagar todos os dados</button>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ===================== MODAL: LANÇAMENTO ===================== -->
+<div class="modal-overlay" id="txModal">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>Novo lançamento</h3>
+      <button class="modal-close" data-close="txModal">×</button>
+    </div>
+    <form id="txForm">
+      <div class="form-row toggle-row">
+        <label class="toggle-option">
+          <input type="radio" name="txType" value="expense" checked>
+          <span>Saída</span>
+        </label>
+        <label class="toggle-option">
+          <input type="radio" name="txType" value="income">
+          <span>Entrada</span>
+        </label>
+      </div>
+      <div class="form-row">
+        <label>Descrição</label>
+        <input type="text" id="txDesc" placeholder="Ex: Supermercado" required>
+      </div>
+      <div class="form-row">
+        <label>Valor (R$)</label>
+        <input type="number" id="txValue" placeholder="0,00" step="0.01" min="0.01" required>
+      </div>
+      <div class="form-row">
+        <label>Categoria</label>
+        <select id="txCategory"></select>
+      </div>
+      <div class="form-row">
+        <label>Data</label>
+        <input type="date" id="txDate" required>
+      </div>
+      <button type="submit" class="btn-primary full">Salvar lançamento</button>
+    </form>
+  </div>
+</div>
+
+<!-- ===================== MODAL: INVESTIMENTO ===================== -->
+<div class="modal-overlay" id="invModal">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>Novo investimento</h3>
+      <button class="modal-close" data-close="invModal">×</button>
+    </div>
+    <form id="invForm">
+      <div class="form-row">
+        <label>Nome do investimento</label>
+        <input type="text" id="invName" placeholder="Ex: Tesouro Selic" required>
+      </div>
+      <div class="form-row">
+        <label>Tipo</label>
+        <select id="invType">
+          <option>Renda Fixa</option>
+          <option>Renda Variável</option>
+          <option>Fundos Imobiliários</option>
+          <option>Criptomoedas</option>
+          <option>Reserva de Emergência</option>
+          <option>Outro</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label>Valor aplicado (R$)</label>
+        <input type="number" id="invValue" placeholder="0,00" step="0.01" min="0.01" required>
+      </div>
+      <button type="submit" class="btn-primary full">Adicionar investimento</button>
+    </form>
+  </div>
+</div>
+
+<!-- ===================== MODAL: META ===================== -->
+<div class="modal-overlay" id="goalModal">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>Nova meta</h3>
+      <button class="modal-close" data-close="goalModal">×</button>
+    </div>
+    <form id="goalForm">
+      <div class="form-row">
+        <label>Nome da meta</label>
+        <input type="text" id="goalName" placeholder="Ex: Viagem para o Japão" required>
+      </div>
+      <div class="form-row">
+        <label>Valor alvo (R$)</label>
+        <input type="number" id="goalTarget" placeholder="0,00" step="0.01" min="1" required>
+      </div>
+      <div class="form-row">
+        <label>Já guardado (R$)</label>
+        <input type="number" id="goalCurrent" placeholder="0,00" step="0.01" min="0" value="0">
+      </div>
+      <button type="submit" class="btn-primary full">Criar meta</button>
+    </form>
+  </div>
+</div>
+
+<!-- ===================== MODAL: APORTE EM META ===================== -->
+<div class="modal-overlay" id="goalAddModal">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>Adicionar valor à meta</h3>
+      <button class="modal-close" data-close="goalAddModal">×</button>
+    </div>
+    <form id="goalAddForm">
+      <input type="hidden" id="goalAddId">
+      <div class="form-row">
+        <label>Valor a adicionar (R$)</label>
+        <input type="number" id="goalAddValue" placeholder="0,00" step="0.01" min="0.01" required>
+      </div>
+      <button type="submit" class="btn-primary full">Adicionar</button>
+    </form>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
