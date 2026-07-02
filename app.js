@@ -1,4 +1,110 @@
 /* =========================================================
+   COFRE — login.js
+   Tela de senha (pin) que trava o acesso ao app.
+   ========================================================= */
+
+const APP_PASSWORD = '801620';
+const SESSION_KEY = 'cofre_session_unlocked';
+
+(function initLogin() {
+  const loginScreen = document.getElementById('loginScreen');
+  const mainApp = document.getElementById('mainApp');
+  const pinDotsWrap = document.getElementById('pinDots');
+  const pinDots = pinDotsWrap ? Array.from(pinDotsWrap.querySelectorAll('.pin-dot')) : [];
+  const hiddenInput = document.getElementById('loginPassword');
+  const errorMsg = document.getElementById('loginError');
+  const keypad = document.getElementById('keypad');
+
+  let currentPin = '';
+
+  function alreadyUnlocked() {
+    return sessionStorage.getItem(SESSION_KEY) === 'true';
+  }
+
+  function renderDots() {
+    pinDots.forEach((dot, i) => {
+      dot.classList.toggle('filled', i < currentPin.length);
+    });
+  }
+
+  function resetPin() {
+    currentPin = '';
+    hiddenInput.value = '';
+    renderDots();
+  }
+
+  function showError() {
+    errorMsg.classList.add('visible');
+    pinDotsWrap.classList.add('shake');
+    setTimeout(() => {
+      pinDotsWrap.classList.remove('shake');
+      resetPin();
+    }, 400);
+  }
+
+  function unlock() {
+    sessionStorage.setItem(SESSION_KEY, 'true');
+    loginScreen.classList.add('unlocking');
+    setTimeout(() => {
+      loginScreen.style.display = 'none';
+      mainApp.style.display = '';
+    }, 460);
+  }
+
+  function checkPin() {
+    if (currentPin.length < APP_PASSWORD.length) return;
+    if (currentPin === APP_PASSWORD) {
+      errorMsg.classList.remove('visible');
+      unlock();
+    } else {
+      showError();
+    }
+  }
+
+  function addDigit(d) {
+    if (currentPin.length >= APP_PASSWORD.length) return;
+    currentPin += d;
+    hiddenInput.value = currentPin;
+    renderDots();
+    checkPin();
+  }
+
+  function backspace() {
+    currentPin = currentPin.slice(0, -1);
+    hiddenInput.value = currentPin;
+    renderDots();
+  }
+
+  if (keypad) {
+    keypad.addEventListener('click', (e) => {
+      const btn = e.target.closest('.key');
+      if (!btn) return;
+      const key = btn.dataset.key;
+      if (key === 'clear') resetPin();
+      else if (key === 'back') backspace();
+      else addDigit(key);
+    });
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (!loginScreen || loginScreen.style.display === 'none') return;
+    if (e.key >= '0' && e.key <= '9') addDigit(e.key);
+    else if (e.key === 'Backspace') backspace();
+    else if (e.key === 'Escape') resetPin();
+  });
+
+  if (loginScreen && mainApp) {
+    if (alreadyUnlocked()) {
+      loginScreen.style.display = 'none';
+      mainApp.style.display = '';
+    } else {
+      renderDots();
+      hiddenInput.focus();
+    }
+  }
+})();
+
+/* =========================================================
    COFRE — storage.js
    Camada de persistência usando localStorage.
    ========================================================= */
