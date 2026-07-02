@@ -547,6 +547,15 @@ function renderDashboard() {
   document.getElementById('statSaved').textContent = formatBRL2(totalSaved);
   document.getElementById('statInvested').textContent = formatBRL2(totalInvested);
 
+  // saldo em conta = todas entradas - todas saídas (histórico completo, não só o mês)
+  const allIncome = DATA.transactions.filter(t => t.type === 'income').reduce((s, t) => s + t.value, 0);
+  const allExpense = DATA.transactions.filter(t => t.type === 'expense').reduce((s, t) => s + t.value, 0);
+  const accountBalance = allIncome - allExpense;
+  const balanceEl = document.getElementById('accountBalanceValue');
+  balanceEl.textContent = formatBRL2(accountBalance);
+  balanceEl.classList.toggle('positive', accountBalance >= 0);
+  balanceEl.classList.toggle('negative', accountBalance < 0);
+
   const safe = calcSafeToSpend(currentDate);
   document.getElementById('safeToSpendValue').textContent = formatBRL2(safe.perDay);
 
@@ -567,7 +576,6 @@ function renderDashboard() {
   getMonthTransactions(currentDate).filter(t => t.type === 'expense').forEach(t => {
     catMap[t.category] = (catMap[t.category] || 0) + t.value;
   });
-  drawCategoryDonut(document.getElementById('categoryChart'), catMap);
 
   // gráfico fluxo últimos 6 meses
   const months = [];
@@ -580,7 +588,22 @@ function renderDashboard() {
     incomes.push(stats.income);
     expenses.push(stats.expense);
   }
-  drawFlowChart(document.getElementById('flowChart'), months, incomes, expenses);
+
+  // Os canvases só têm largura real quando visíveis (o app pode estar escondido
+  // atrás da tela de login). Se ainda não há largura, aguarda o próximo frame.
+  const catCanvas = document.getElementById('categoryChart');
+  const flowCanvas = document.getElementById('flowChart');
+
+  function drawChartsWhenVisible(attempt) {
+    const visible = catCanvas.getBoundingClientRect().width > 0;
+    if (!visible) {
+      if (attempt < 30) requestAnimationFrame(() => drawChartsWhenVisible(attempt + 1));
+      return;
+    }
+    drawCategoryDonut(catCanvas, catMap);
+    drawFlowChart(flowCanvas, months, incomes, expenses);
+  }
+  drawChartsWhenVisible(0);
 
   // últimos lançamentos
   const recentList = document.getElementById('recentList');
@@ -658,7 +681,17 @@ function renderInvestments() {
   DATA.investments.forEach(i => {
     typeMap[i.type] = (typeMap[i.type] || 0) + i.value;
   });
-  drawInvestmentChart(document.getElementById('invChart'), typeMap);
+
+  const invCanvas = document.getElementById('invChart');
+  function drawInvChartWhenVisible(attempt) {
+    const visible = invCanvas.getBoundingClientRect().width > 0;
+    if (!visible) {
+      if (attempt < 30) requestAnimationFrame(() => drawInvChartWhenVisible(attempt + 1));
+      return;
+    }
+    drawInvestmentChart(invCanvas, typeMap);
+  }
+  drawInvChartWhenVisible(0);
 
   const listEl = document.getElementById('invList');
   if (DATA.investments.length === 0) {
