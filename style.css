@@ -298,6 +298,38 @@ h1 {
   color: rgba(243, 237, 224, 0.4);
 }
 
+.vault-balance {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 18px 26px;
+  border-left: 1px solid rgba(201, 162, 75, 0.18);
+  border-right: 1px solid rgba(201, 162, 75, 0.18);
+  z-index: 1;
+  flex-shrink: 0;
+}
+
+.balance-label {
+  font-size: 12.5px;
+  color: rgba(243, 237, 224, 0.55);
+}
+
+.balance-value {
+  font-family: var(--font-mono);
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--paper);
+  line-height: 1.1;
+}
+
+.balance-value.positive { color: var(--positive); }
+.balance-value.negative { color: var(--negative); }
+
+.balance-sub {
+  font-size: 11px;
+  color: rgba(243, 237, 224, 0.35);
+}
+
 .vault-stats {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -685,6 +717,7 @@ h1 {
   .main { padding: 24px 20px 60px; }
   .dash-grid { grid-template-columns: 1fr; }
   .vault-panel { flex-direction: column; text-align: center; padding: 28px; }
+  .vault-balance { border-left: none; border-right: none; border-top: 1px solid rgba(201, 162, 75, 0.18); border-bottom: 1px solid rgba(201, 162, 75, 0.18); padding: 16px 0; align-items: center; }
   .vault-stats { grid-template-columns: 1fr 1fr; }
   h1 { font-size: 26px; }
 }
