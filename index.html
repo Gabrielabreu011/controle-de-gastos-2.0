@@ -222,6 +222,11 @@
       setTimeout(function () {
         screen.style.display = 'none';
         $('mainApp').style.display = '';
+        // Garante que os gráficos (que exigem largura real do canvas)
+        // sejam redesenhados agora que o app está visível.
+        if (typeof window.renderAll === 'function') {
+          requestAnimationFrame(function () { window.renderAll(); });
+        }
       }, 460);
     }
 
@@ -332,6 +337,12 @@
             <span id="safeToSpendValue" class="dial-value">R$ 0,00</span>
             <span id="safeToSpendSub" class="dial-sub">até o fim do mês</span>
           </div>
+        </div>
+
+        <div class="vault-balance">
+          <span class="balance-label">Saldo em conta</span>
+          <span id="accountBalanceValue" class="balance-value">R$ 0,00</span>
+          <span class="balance-sub">entradas − saídas do mês</span>
         </div>
 
         <div class="vault-stats">
